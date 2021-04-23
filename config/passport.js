@@ -6,7 +6,7 @@ passport.use(
   new LocalStrategy(
     { usernameField: "email" },
     function (email, password, done) {
-      db.User.findOne({email}, function (err, user) {
+      db.User.findOne({ email }, function (err, user) {
         if (err) {
           return done(err);
         }
@@ -18,7 +18,8 @@ passport.use(
           if (!result) {
             return done(null, false, { message: "Incorrect password." });
           }
-          return done(null, user);
+          const { _id, email } = user;
+          return done(null, { _id, email });
         });
       });
     }
@@ -28,12 +29,13 @@ passport.use(
 passport.serializeUser(function (user, done) {
   console.log("serialize user");
   console.log({ user });
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(function (id, done) {
-  console.log("deserialize user");
+  
   db.User.findById(id, function (err, user) {
+    console.log("deserialize user");
     done(err, user);
   });
 });
