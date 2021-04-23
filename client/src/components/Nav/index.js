@@ -8,6 +8,9 @@ function Nav() {
   function handleLogout (event) {
     event.preventDefault();
     fetch('/api/logout/')
+    .then(() => {
+      window.location = '/'
+    })
   }
 
   return (
@@ -19,7 +22,7 @@ function Nav() {
         <button>Post Item</button>
       </Link>
       {status.isLoggedin ? (
-        <button>Logout</button>
+        <button onClick={handleLogout}>Logout</button>
       ) : (
         <>
           <Link to="/login">

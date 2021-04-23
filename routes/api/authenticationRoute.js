@@ -19,4 +19,19 @@ router.post("/api/signup", (req, res) => {
     });
 });
 
+router.get('/api/logout', (req,res) => {
+  // if (!req.user){
+  //   return res.redirect('/');
+  // }
+  req.logout();
+  res.end();
+})
+
+router.get('/api/userstatus', (req,res) => {
+  if (!req.user) {
+    return res.json({isLoggedin : false});
+  }
+  res.json ({isLoggedin: true});
+})
+
 module.exports = router;

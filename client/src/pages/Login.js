@@ -8,6 +8,8 @@ function Login(props) {
     password: "",
   });
 
+  const [loginStatus, setLoginStatus] = useState(null);
+
   const status = useContext(IsLoggedinContext)
 
   function handleChange(event) {
@@ -21,7 +23,6 @@ function Login(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(userCredentials);
     fetch("/api/login", {
       method: "POST",
       body: JSON.stringify(userCredentials),
@@ -31,13 +32,14 @@ function Login(props) {
     })
       .then((resp) => {
         if (resp.status !== 200) {
-          console.log(resp);
-          return resp;
+          setLoginStatus(false);
+          setUserCredentials({email:'',password:''})
+          return;
         }
 
         if (resp.status === 200) {
           status.setIsLoggedin(true);
-          // window.location = "/";
+          window.location = '/'
         }
         
       })
@@ -46,9 +48,15 @@ function Login(props) {
       });
   }
 
+  function handleClick (event) {
+    event.preventDefault();
+    setLoginStatus(null);
+  }
+
   return (
     <div>
       <h1>Login page</h1>
+      { loginStatus === false &&  <div>Incorect email or password. <span onClick={handleClick}>x</span></div>  }
       <form onSubmit={handleSubmit}>
         <label htmlFor="email"> Email:</label>
         <input

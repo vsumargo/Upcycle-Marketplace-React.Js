@@ -13,7 +13,22 @@ import SearchItem from "./pages/SearchItem.js";
 // Refer to the Basic Example documentation if you need to.
 // (https://reacttraining.com/react-router/web/example/basic)
 function App() {
-  const [isLoggedin, setIsLoggedin] = useState(false);
+  const [isLoggedin, setIsLoggedin] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/userstatus')
+    .then((res) => {
+      return res.json();
+    })
+    .then((userStatus) => {
+      console.log(userStatus)
+      if (!userStatus.isLoggedin) {
+        return setIsLoggedin(false);
+      }
+      setIsLoggedin(true);
+    })
+    .catch(err => console.log(err));
+  }, [])
   
 
   return (
