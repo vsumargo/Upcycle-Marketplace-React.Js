@@ -6,7 +6,7 @@ router.post("/api/login", passport.authenticate("local"), (req, res) => {
   res.status(200).json({ success: true });
 });
 
-router.post("/api/signup", (req, res) => {
+router.post("/api/register/user", (req, res) => {
   console.log(req.body);
   db.User.create({
     email: req.body.email,
@@ -31,7 +31,7 @@ router.get('/api/userstatus', (req,res) => {
   if (!req.user) {
     return res.json({isLoggedin : false});
   }
-  res.json ({isLoggedin: true});
+  res.status(200).json ({isLoggedin: true});
 })
 
 module.exports = router;
