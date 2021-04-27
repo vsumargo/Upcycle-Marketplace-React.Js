@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import IsLoggedinContext from './utils/IsLoggedinContext.js'
+import IsLoggedinContext from "./utils/IsLoggedinContext.js";
 
 import Nav from "./components/Nav";
 import Home from "./pages/Home.js";
@@ -16,20 +16,19 @@ function App() {
   const [isLoggedin, setIsLoggedin] = useState(null);
 
   useEffect(() => {
-    fetch('/api/userstatus')
-    .then((res) => {
-      return res.json();
-    })
-    .then((userStatus) => {
-      console.log(userStatus)
-      if (!userStatus.isLoggedin) {
-        return setIsLoggedin(false);
-      }
-      setIsLoggedin(true);
-    })
-    .catch(err => console.log(err));
-  }, [])
-  
+    fetch("/api/userstatus")
+      .then((res) => {
+        return res.json();
+      })
+      .then((userStatus) => {
+        console.log(userStatus);
+        if (!userStatus.isLoggedin) {
+          return setIsLoggedin(false);
+        }
+        setIsLoggedin(true);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <>
