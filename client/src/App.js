@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import IsLoggedinContext from "./utils/IsLoggedinContext.js";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Container from "@material-ui/core/Container";
 
 import Nav from "./components/Nav";
 import Home from "./pages/Home.js";
@@ -32,26 +34,29 @@ function App() {
 
   return (
     <>
+      <CssBaseline />
       <IsLoggedinContext.Provider value={{ isLoggedin, setIsLoggedin }}>
         <BrowserRouter>
           <Nav />
-          <Switch>
-            <Route exact path="/post-item">
-              <PostItem />
-            </Route>
-            <Route exact path="/login">
-              <Login />
-            </Route>
-            <Route exact path="/signup">
-              <Signup />
-            </Route>
-            <Route exact path="/search">
-              <SearchItem />
-            </Route>
-            <Route exact path="/">
-              <Home />
-            </Route>
-          </Switch>
+          <Container>
+            <Switch>
+              <Route exact path="/post-item">
+                <PostItem />
+              </Route>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+              <Route exact path="/signup">
+                <Signup />
+              </Route>
+              <Route exact path="/search">
+                <SearchItem />
+              </Route>
+              <Route exact path="/">
+                <Home />
+              </Route>
+            </Switch>
+          </Container>
         </BrowserRouter>
       </IsLoggedinContext.Provider>
     </>

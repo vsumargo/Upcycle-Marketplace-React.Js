@@ -1,6 +1,12 @@
 import React, { useState, useContext } from "react";
-import {Redirect} from 'react-router-dom';
-import IsLoggedinContext from '../utils/IsLoggedinContext'
+import { useHistory } from "react-router-dom";
+import IsLoggedinContext from "../utils/IsLoggedinContext";
+import Button from "@material-ui/core/Button";
+
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 function Login(props) {
   const [userCredentials, setUserCredentials] = useState({
@@ -8,9 +14,12 @@ function Login(props) {
     password: "",
   });
 
-  const [loginStatus, setLoginStatus] = useState(null);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
 
-  const status = useContext(IsLoggedinContext)
+  const [loginStatus, setLoginStatus] = useState(null);
+  const history = useHistory();
+
+  const status = useContext(IsLoggedinContext);
 
   function handleChange(event) {
     const name = event.target.name;
@@ -20,9 +29,9 @@ function Login(props) {
     });
   }
 
-
-  function handleSubmit(event) {
+  function handleLogin(event) {
     event.preventDefault();
+    setOpenBackdrop(true);
     fetch("/api/login", {
       method: "POST",
       body: JSON.stringify(userCredentials),
@@ -33,51 +42,88 @@ function Login(props) {
       .then((resp) => {
         if (resp.status !== 200) {
           setLoginStatus(false);
-          setUserCredentials({email:'',password:''})
+          setOpenBackdrop(false);
+          setUserCredentials({ email: "", password: "" });
           return;
         }
 
         if (resp.status === 200) {
           status.setIsLoggedin(true);
-          window.location = '/'
+          history.push(`/`);
         }
-        
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
-  function handleClick (event) {
+  function handleClick(event) {
     event.preventDefault();
     setLoginStatus(null);
   }
 
   return (
     <div>
-      <h1>Login page</h1>
-      { loginStatus === false &&  <div>Incorect email or password. <span onClick={handleClick}>x</span></div>  }
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email"> Email:</label>
-        <input
-          onChange={handleChange}
-          type="email"
-          id="email"
-          name="email"
-          placeholder="Enter email address"
-          value={userCredentials.email}
-        />
-        <label htmlFor="password">Password:</label>
-        <input
-          onChange={handleChange}
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Enter password"
-          value={userCredentials.password}
-        />
-        <button >submit</button>
-      </form>
+      <Grid
+        container
+        spacing={0}
+        style={{ height: "89vh" }}
+        alignItems="flex-start"
+        justify="center"
+      >
+        <Grid item xs={12} sm={8} md={4} align="center">
+          <h1>Log-in Page</h1>
+          {loginStatus === false && (
+            <div>
+              Incorect email or password. <span onClick={handleClick}>x</span>
+            </div>
+          )}
+          <form autoComplete="off">
+            <TextField
+              id="email"
+              name="email"
+              label="Email"
+              type="email"
+              variant="outlined"
+              onChange={handleChange}
+              value={userCredentials.email}
+              style={{ width: "100%", margin: "8px 0" }}
+            />
+            <TextField
+              onChange={handleChange}
+              type="password"
+              id="password"
+              name="password"
+              label="Password"
+              value={userCredentials.password}
+              variant="outlined"
+              style={{ width: "100%", margin: "8px 0" }}
+            />
+            {userCredentials.email === "" || userCredentials.password === "" ? (
+              <Button
+                variant="contained"
+                color="primary"
+                disabled
+                style={{ width: "100%", margin: "8px 0" }}
+              >
+                Log in
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ width: "100%", margin: "8px 0" }}
+                onClick={handleLogin}
+              >
+                Log in
+              </Button>
+            )}
+          </form>
+        </Grid>
+      </Grid>
+      <Backdrop style={{ zIndex: 10, color: "#fff" }} open={openBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }
