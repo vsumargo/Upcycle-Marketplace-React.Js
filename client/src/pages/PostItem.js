@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import IsLoggedinContext from "../utils/IsLoggedinContext.js";
 import PostItemForm from "../components/forms/PostItemForm.js";
-import axios from "axios";
+import Grid from "@material-ui/core/Grid";
 
 function PostItem() {
   const status = useContext(IsLoggedinContext);
@@ -63,7 +63,7 @@ function PostItem() {
   }
 
   return (
-    <div>
+    <>
       {status.isLoggedin ? (
         <PostItemForm
           itemDetails={itemDetails}
@@ -74,7 +74,7 @@ function PostItem() {
       ) : (
         <div> You need to Login to post item.</div>
       )}
-    </div>
+    </>
   );
 }
 

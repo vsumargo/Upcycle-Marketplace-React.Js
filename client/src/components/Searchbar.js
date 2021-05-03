@@ -35,14 +35,11 @@ function Searchbar(props) {
 
   return (
     <div className={classes.search}>
-      <Link
-        to={props.searchedItem && "/search?item=" + props.searchedItem}
-        style={{ color: "black", textDecoration: "none" }}
-      >
-        <Button className={classes.searchIcon}>
+     
+        <Button className={classes.searchIcon} type='submit'>
           <SearchIcon />
         </Button>
-      </Link>
+      
 
       <TextField
         style={{ width: "inherit", zIndex: 0 }}

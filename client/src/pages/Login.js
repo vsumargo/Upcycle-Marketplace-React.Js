@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import IsLoggedinContext from "../utils/IsLoggedinContext";
-import Button from "@material-ui/core/Button";
 
+import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Alert from "@material-ui/lab/Alert";
 
 function Login(props) {
   const [userCredentials, setUserCredentials] = useState({
@@ -74,11 +75,17 @@ function Login(props) {
         <Grid item xs={12} sm={8} md={4} align="center">
           <h1>Log-in Page</h1>
           {loginStatus === false && (
-            <div>
-              Incorect email or password. <span onClick={handleClick}>x</span>
-            </div>
+            <Alert severity="error">
+              Incorect email or password.
+              <span
+                onClick={handleClick}
+                style={{ fontWeight: 600, cursor: "pointer", color: "red" }}
+              >
+                X
+              </span>
+            </Alert>
           )}
-          <form autoComplete="off">
+          <form autoComplete="off" onSubmit={handleLogin}>
             <TextField
               id="email"
               name="email"
@@ -105,6 +112,7 @@ function Login(props) {
                 color="primary"
                 disabled
                 style={{ width: "100%", margin: "8px 0" }}
+                type="submit"
               >
                 Log in
               </Button>
@@ -113,7 +121,7 @@ function Login(props) {
                 variant="contained"
                 color="primary"
                 style={{ width: "100%", margin: "8px 0" }}
-                onClick={handleLogin}
+                type="submit"
               >
                 Log in
               </Button>

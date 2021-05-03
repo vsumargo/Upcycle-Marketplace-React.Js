@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import RegisterEmailPasswordForm from "../components/forms/RegisterEmailPasswordForm.js";
 import UserDetailsForm from "../components/forms/UserDetailsForm.js";
 import useEmail from "../utils/useEmail.js";
+
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Alert from "@material-ui/lab/Alert";
 
 function Signup() {
   const [userCredentials, setUserCredentials] = useState({
@@ -12,6 +20,7 @@ function Signup() {
   const [isEmailValid, setIsEmailValid] = useState(null);
   const [checkPassword, setCheckPassword] = useState(null);
   const [goNext, setGoNext] = useState(false);
+  const history = useHistory();
 
   const [userDetails, setUserDetails] = useState({
     firstname: "",
@@ -40,22 +49,25 @@ function Signup() {
     return setIsEmailValid(emailValid);
   }, [emailValid]);
 
-  useEffect(()=> {
-    if(userCredentials.password === '' || userCredentials.confirmPassword === ''){
+  useEffect(() => {
+    if (
+      userCredentials.password === "" ||
+      userCredentials.confirmPassword === ""
+    ) {
       return setCheckPassword(null);
     }
-    if( userCredentials.password !== userCredentials.confirmPassword){
-      return setCheckPassword(false)
+    if (userCredentials.password !== userCredentials.confirmPassword) {
+      return setCheckPassword(false);
     }
-    
-    return setCheckPassword(true)
-  }, [userCredentials])
+
+    return setCheckPassword(true);
+  }, [userCredentials]);
 
   useEffect(() => {
-    if (!isEmailValid || !checkPassword){
+    if (!isEmailValid || !checkPassword) {
       setGoNext(false);
     }
-  },[isEmailValid,checkPassword])
+  }, [isEmailValid, checkPassword]);
 
   function handleChangeEmailForm(event) {
     const name = event.target.name;
@@ -67,34 +79,36 @@ function Signup() {
 
   function handleNextButton(event) {
     event.preventDefault();
-    if (isEmailValid === true && checkPassword === true){
+    if (isEmailValid === true && checkPassword === true) {
       return setGoNext(true);
     }
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    function validateUserDetails (){
-      if (userDetails.firstname === '' || 
-      userDetails.lastname === ''|| 
-      userDetails.address === '' || 
-      userDetails.suburb === ''||  
-      userDetails.postcode === ''||  
-      userDetails.state === ''||  
-      userDetails.mobile === ''){
-        return false
+    function validateUserDetails() {
+      if (
+        userDetails.firstname === "" ||
+        userDetails.lastname === "" ||
+        userDetails.address === "" ||
+        userDetails.suburb === "" ||
+        userDetails.postcode === "" ||
+        userDetails.state === "" ||
+        userDetails.mobile === ""
+      ) {
+        return false;
       }
-      return true
+      return true;
     }
 
-    if(!validateUserDetails()){
+    if (!validateUserDetails()) {
       return;
     }
 
-    const {email,password} = userCredentials;
+    const { email, password } = userCredentials;
     fetch("/api/register/user", {
       method: "POST",
-      body: JSON.stringify({email,password,userDetails}),
+      body: JSON.stringify({ email, password, userDetails }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -103,7 +117,7 @@ function Signup() {
         if (resp.status !== 200) {
           throw resp.statusText;
         }
-        window.location='/login'
+        history.push("/login");
       })
       .catch((error) => {
         console.log(error);
@@ -129,33 +143,51 @@ function Signup() {
 
   return (
     <div>
-      <h1>Signup page</h1>
-      <RegisterEmailPasswordForm
-        userCredentials={userCredentials}
-        isEmailValid={isEmailValid}
-        checkPassword={checkPassword}
-        handleChange={handleChangeEmailForm}
-        handleNext={handleNextButton}
-      />
-      {isEmailValid ? (
-        <div>Email is Valid</div>
-      ) : (
-        isEmailValid === false && <div>Email address already exist</div>
-      )}
+      <Grid
+        container
+        spacing={4}
+        style={{ height: "89vh" }}
+        alignItems="flex-start"
+        justify="center"
+      >
+        <Grid item xs={12} sm={5} md={4}>
+          <h1>Sign Up</h1>
+          <RegisterEmailPasswordForm
+            userCredentials={userCredentials}
+            isEmailValid={isEmailValid}
+            checkPassword={checkPassword}
+            handleChange={handleChangeEmailForm}
+            handleNext={handleNextButton}
+          />
+          {isEmailValid ? (
+            <Alert severity="success">Email is Valid</Alert>
+          ) : (
+            isEmailValid === false && (
+              <Alert severity="error">Email address already exist</Alert>
+            )
+          )}
 
-      {checkPassword ? (
-        <div>Password Matched</div>
-      ) : (
-        checkPassword === false && <div>Password does not match</div>
-      )}
-
-      {goNext === true && (
-        <UserDetailsForm
-          userdetails={userDetails}
-          handleChange={handleChangeUserDetailsForm}
-          handleSubmit={handleSubmit}
-        />
-      )}
+          {checkPassword ? (
+            <Alert severity="success">Password Matched</Alert>
+          ) : (
+            checkPassword === false && (
+              <Alert severity="error">Password does not match</Alert>
+            )
+          )}
+        </Grid>
+        <Grid item xs={12} sm={7} md={8}>
+          {goNext === true && (
+            <>
+              <h1>Personal Details:</h1>
+              <UserDetailsForm
+                userdetails={userDetails}
+                handleChange={handleChangeUserDetailsForm}
+                handleSubmit={handleSubmit}
+              />
+            </>
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 }
