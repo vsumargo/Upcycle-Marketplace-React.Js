@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Route, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import ItemCard from "../components/cards/itemCard.js";
 import ViewItem from "../pages/ViewItem.js";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+
 
 function SearchItem() {
   const location = useLocation();
@@ -41,27 +44,41 @@ function SearchItem() {
     setViewItemDetails(true);
   }
 
-  function handleClickBackBtn (event) {
+  function handleClickBackBtn(event) {
     event.preventDefault();
     setItemDetails({});
     setViewItemDetails(false);
   }
 
+  
+
   return (
     <div>
-      <h1>Searching for: {query.get("item")}</h1>
-      {viewItemDetails === false &&
-        searchedItems.map((details, index) => {
-          return (
-            <ItemCard
-              handleClick={handleClickItemCard}
-              key={index}
-              index={index}
-              details={details}
-            />
-          );
-        })}
-      {viewItemDetails === true && <ViewItem handleClick={handleClickBackBtn} itemDetails={itemDetails}/>}
+      <Typography variant="h4" gutterBottom>Searching for: {query.get("item")}</Typography>
+      <Grid
+        container
+        spacing={1}
+        alignItems="flex-start"
+        justify="flex-start"
+      >
+        {viewItemDetails === false &&
+          searchedItems.map((details, index) => {
+            return (
+              <ItemCard
+                handleClick={handleClickItemCard}
+                key={index}
+                index={index}
+                details={details}
+              />
+            );
+          })}
+        {viewItemDetails === true && (
+          <ViewItem
+            handleClick={handleClickBackBtn}
+            itemDetails={itemDetails}
+          />
+        )}
+      </Grid>
     </div>
   );
 }
