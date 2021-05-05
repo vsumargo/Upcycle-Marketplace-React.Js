@@ -36,6 +36,7 @@ const postSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   userId: { type: Schema.Types.ObjectId, ref: "User" },
+  likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
 const Post = mongoose.model("Post", postSchema);

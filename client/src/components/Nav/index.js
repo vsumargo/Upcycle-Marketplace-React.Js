@@ -1,20 +1,21 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import IsLoggedinContext from "../../utils/IsLoggedinContext";
 
-import { fade, makeStyles } from "@material-ui/core/styles";
+import { fade, makeStyles, withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
-import Badge from "@material-ui/core/Badge";
+import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Button from "@material-ui/core/Button";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -45,13 +46,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   searchIcon: {
-    padding: theme.spacing(0, 2),
     height: "100%",
     position: "absolute",
-    pointerEvents: "none",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 10,
   },
   inputRoot: {
     color: "default",
@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("sm")]: {
@@ -80,20 +79,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const CssIconButton = withStyles({
+  root: {
+    "&.MuiButtonBase-root": {
+      padding: "6px",
+      "&.MuiIconButton-root:hover": {
+        backgroundColor: "rgba(10,10,10,0.1)",
+      },
+    },
+  },
+})(IconButton);
+
 export default function PrimarySearchAppBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
-  const status = useContext(IsLoggedinContext);
+  const { userStat } = useContext(IsLoggedinContext);
   const [login, setLogin] = useState(null);
 
+  let location = useLocation();
+  const [displaySearchBar, setDisplaySearchBar] = useState(false);
+  const [item, setItem] = useState("");
+  let history = useHistory();
+
   useEffect(() => {
-    setLogin(status.isLoggedin);
-  }, [status.isLoggedin]);
+    if (
+      location.pathname === "/" ||
+      location.pathname === "/login" ||
+      location.pathname === "/signup" ||
+      location.pathname === "/post-item"
+    ) {
+      displaySearchBar !== false && setDisplaySearchBar(false);
+    } else {
+      setDisplaySearchBar(true);
+    }
+  }, [displaySearchBar, location.pathname]);
+
+  useEffect(() => {
+    setLogin(userStat.isLoggedin);
+  }, [userStat.isLoggedin]);
 
   function handleLogout(event) {
     event.preventDefault();
+    setAnchorEl(null);
+    handleMobileMenuClose();
     fetch("/api/logout/").then(() => {
       window.location = "/";
     });
@@ -130,8 +160,10 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <Link to="/watchlist">Watchlist</Link>
+      </MenuItem>
     </Menu>
   );
 
@@ -146,7 +178,64 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleProfileMenuOpen}>
+      {login === null ? (
+        ""
+      ) : login ? (
+        <MenuList>
+          <MenuItem onClick={handleMenuClose}>
+            <Link
+              to="/post-item"
+              style={{ color: "none", textDecoration: "none" }}
+            >
+              Sell Item
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="default"
+              style={{ padding: 0 }}
+            >
+              <AccountCircle fontSize="large" />
+            </IconButton>
+          </MenuItem>
+        </MenuList>
+      ) : (
+        <MenuList>
+          <MenuItem onClick={handleMenuClose}>
+            <Link
+              to="/signup"
+              style={{
+                color: "black",
+                textDecoration: "none",
+                fontSize: "12px",
+                fontWeight: 500,
+              }}
+            >
+              SIGN UP
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose}>
+            <Link
+              to="/login"
+              style={{
+                color: "black",
+                textDecoration: "none",
+                fontSize: "12px",
+                fontWeight: 500,
+              }}
+            >
+              LOGIN
+            </Link>
+          </MenuItem>
+        </MenuList>
+      )}
+      {/* <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -156,7 +245,7 @@ export default function PrimarySearchAppBar() {
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
-      </MenuItem>
+      </MenuItem> */}
     </Menu>
   );
 
@@ -174,17 +263,30 @@ export default function PrimarySearchAppBar() {
             </Typography>
           </Link>
           <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
+            {displaySearchBar && (
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  history.push(`/search?item=${item}`);
+                }}
+              >
+                <CssIconButton type="submit">
+                  <SearchIcon />
+                </CssIconButton>
+                <InputBase
+                  placeholder="Search…"
+                  onChange={(event) => {
+                    event.preventDefault();
+                    setItem(event.target.value);
+                  }}
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{ "aria-label": "search" }}
+                />
+              </form>
+            )}
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
@@ -204,16 +306,16 @@ export default function PrimarySearchAppBar() {
                 <Button color="default" onClick={handleLogout}>
                   Logout
                 </Button>
-                <IconButton
-                  edge="end"
+                <Button
                   aria-label="account of current user"
                   aria-controls={menuId}
                   aria-haspopup="true"
                   onClick={handleProfileMenuOpen}
                   color="default"
                 >
-                  <AccountCircle />
-                </IconButton>
+                  <AccountCircle fontSize="large" />
+                  <ArrowDropDownIcon />
+                </Button>
               </>
             ) : (
               <>

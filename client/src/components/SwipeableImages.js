@@ -1,15 +1,12 @@
 import React from "react";
+import IconBar from "./IconBar.js";
+
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MobileStepper from "@material-ui/core/MobileStepper";
 import Button from "@material-ui/core/Button";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import SwipeableViews from "react-swipeable-views";
-import IconButton from "@material-ui/core/IconButton";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import BookmarkBorderSharpIcon from "@material-ui/icons/BookmarkBorderSharp";
-import BookmarkSharpIcon from "@material-ui/icons/BookmarkSharp";
 import CardActions from "@material-ui/core/CardActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -105,23 +102,12 @@ function SwipeableImages(props) {
         }
       />
       <CardActions disableSpacing className={classes.cardActions}>
-        <IconButton aria-label="like post" onClick={props.handleLikeBtn}>
-          {!props.isLiked ? (
-            <FavoriteBorderIcon />
-          ) : (
-            <FavoriteIcon color="secondary" />
-          )}
-        </IconButton>
-        <IconButton
-          aria-label="add to watchlist"
-          onClick={props.handleWatchlistBtn}
-        >
-          {!props.isBookmarked ? (
-            <BookmarkBorderSharpIcon />
-          ) : (
-            <BookmarkSharpIcon color="primary" />
-          )}
-        </IconButton>
+        <IconBar
+          isLiked={props.isLiked}
+          isBookmarked={props.isBookmarked}
+          handleLikeBtn={props.handleLikeBtn}
+          handleWatchlistBtn={props.handleWatchlistBtn}
+        />
       </CardActions>
     </div>
   );

@@ -4,11 +4,7 @@ import RegisterEmailPasswordForm from "../components/forms/RegisterEmailPassword
 import UserDetailsForm from "../components/forms/UserDetailsForm.js";
 import useEmail from "../utils/useEmail.js";
 
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
-import Backdrop from "@material-ui/core/Backdrop";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
 
 function Signup() {

@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useParams, useHistory } from "react-router-dom";
 import IsLoggedinContext from "../utils/IsLoggedinContext";
 import SwipeableImages from "../components/SwipeableImages.js";
+import useCheckLiked from "../utils/useCheckLiked.js";
+import useCheckWatchlisted from "../utils/useCheckWatchlisted.js";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -20,60 +23,128 @@ const useStyles = makeStyles({
     height: "max-content",
   },
   button: {
-    width: "150px",
+    width: "200px",
   },
 });
-function ViewItem(props) {
+function ViewItem() {
   const classes = useStyles();
-  const [isLiked, setIsLiked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const { userStat } = useContext(IsLoggedinContext);
+  const [itemDetails, setItemDetails] = useState({ images: [], likedBy: [] });
+  useEffect(() => {
+    fetch(`/item/${id}`)
+      .then((res) => {
+        if (res.status !== 200) {
+          throw res;
+        }
 
-  const status = useContext(IsLoggedinContext);
+        return res.json();
+      })
+      .then((result) => {
+        console.log(result);
+        setItemDetails(result);
+      })
+      .catch((err) => console.log(err));
+  }, [id]);
+  const [isLiked, setIsLiked] = useCheckLiked(itemDetails.likedBy);
+  const [isBookmarked, setIsBookmarked] = useCheckWatchlisted(itemDetails._id);
+  const history = useHistory();
+  let { id } = useParams();
+  console.log(id);
 
   function handleLikeBtn(event) {
     event.preventDefault();
     event.stopPropagation();
+    if (!userStat.isLoggedin) {
+      return console.log(`You need to Login to like posts`);
+    }
+
     if (!isLiked) {
-      console.log(`liked this post`);
-      return setIsLiked(true);
+      console.log(`liked post ID: ${itemDetails._id} `);
+      return fetch("/api/post/like", {
+        method: "PUT",
+        body: JSON.stringify({ id: itemDetails._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          if (resp.status !== 200) {
+            throw resp.statusText;
+          }
+          return resp.json();
+        })
+        .then((result) => {
+          console.log(result);
+          setIsLiked(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
 
     if (isLiked) {
-      console.log(`liked this post`);
-      return setIsLiked(false);
+      console.log(`remove like from post ID: ${itemDetails._id}`);
+      return fetch("/api/post/unlike", {
+        method: "PUT",
+        body: JSON.stringify({ id: itemDetails._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          if (resp.status !== 200) {
+            throw resp.statusText;
+          }
+          return resp.json();
+        })
+        .then((result) => {
+          console.log(result);
+          setIsLiked(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 
   function handleWatchlistBtn(event) {
     event.preventDefault();
     event.stopPropagation();
+    if (!userStat.isLoggedin) {
+      return console.log(`You need to Login to add to watchlist`);
+    }
     if (!isBookmarked) {
-      console.log(`added to watchlist`);
+      console.log(`added to watchlist item ID: ${itemDetails._id}`);
       return setIsBookmarked(true);
     }
 
     if (isBookmarked) {
-      console.log(`remove from watchlist`);
+      console.log(`remove from watchlist item ID: ${itemDetails._id}`);
       return setIsBookmarked(false);
     }
   }
 
-  useEffect(() => {
-    if (status.isLoggedin) {
-      // make fetch to see what users have liked or have bookmarked;
-      return;
+  function handleCloseBtn(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (history.length === 1) {
+      return window.close();
     }
-  }, [status.isLoggedin]);
+    history.goBack();
+  }
+
   return (
-    <>
+    <Grid
+      container
+      alignItems="flex-start"
+      justify="flex-start"
+      style={{ marginTop: "16px" }}
+    >
       <Card className={classes.root}>
-        <IconButton onClick={props.handleClick} style={{ float: "right" }}>
-          <CloseIcon color="secondary" />
-        </IconButton>
-        <Grid container spacing={0}>
+        <Grid container>
           <Grid item xs={12} sm={5}>
             <SwipeableImages
-              images={props.itemDetails.images}
+              images={itemDetails.images}
               isLiked={isLiked}
               isBookmarked={isBookmarked}
               handleLikeBtn={handleLikeBtn}
@@ -81,9 +152,12 @@ function ViewItem(props) {
             />
           </Grid>
           <Grid item xs={12} sm={7}>
-            <CardContent style={{ paddingTop: 0, marginLeft: "16px" }}>
+            <CardContent style={{ marginLeft: "16px" }}>
+              <IconButton onClick={handleCloseBtn} style={{ float: "right" }}>
+                <CloseIcon color="secondary" />
+              </IconButton>
               <Typography variant="h5" component="h2">
-                {props.itemDetails.title}
+                {itemDetails.title}
               </Typography>
               <Typography
                 variant="body1"
@@ -91,11 +165,11 @@ function ViewItem(props) {
                 component="p"
                 style={{ paddingBottom: "8px" }}
               >
-                {`Price: $ ${props.itemDetails.price}`}
+                {`Price: $ ${itemDetails.price}`}
               </Typography>
               <Divider variant="middle" style={{ margin: 0 }} />
               <Grid container style={{ padding: "16px 0" }}>
-                <Grid item xs={12} sm={6} align="center">
+                <Grid item xs={12} md={6} align="center">
                   <Button
                     variant="contained"
                     style={{
@@ -110,7 +184,7 @@ function ViewItem(props) {
                   </Button>
                 </Grid>
 
-                <Grid item xs={12} sm={6} align="center">
+                <Grid item xs={12} md={6} align="center">
                   <Button
                     variant="contained"
                     color="primary"
@@ -127,17 +201,17 @@ function ViewItem(props) {
               <Divider variant="middle" style={{ margin: 0 }} />
               <Typography
                 style={{ paddingTop: "8px" }}
-              >{`Condition: ${props.itemDetails.condition}`}</Typography>
+              >{`Condition: ${itemDetails.condition}`}</Typography>
               <br></br>
               <Typography variant="body1" component="div">
                 Description:
               </Typography>
-              <Typography>{props.itemDetails.description}</Typography>
+              <Typography>{itemDetails.description}</Typography>
             </CardContent>
           </Grid>
         </Grid>
       </Card>
-    </>
+    </Grid>
   );
 }
 

@@ -9,7 +9,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
 
-function Login(props) {
+function Login() {
   const [userCredentials, setUserCredentials] = useState({
     email: "",
     password: "",
@@ -20,7 +20,7 @@ function Login(props) {
   const [loginStatus, setLoginStatus] = useState(null);
   const history = useHistory();
 
-  const status = useContext(IsLoggedinContext);
+  const { setUserStat } = useContext(IsLoggedinContext);
 
   function handleChange(event) {
     const name = event.target.name;
@@ -49,8 +49,14 @@ function Login(props) {
         }
 
         if (resp.status === 200) {
-          status.setIsLoggedin(true);
-          history.push(`/`);
+          fetch("/api/userstatus")
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              setUserStat(data);
+              history.push(`/`);
+            });
         }
       })
       .catch((error) => {

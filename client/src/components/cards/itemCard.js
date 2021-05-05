@@ -1,19 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import IsLoggedinContext from "../../utils/IsLoggedinContext";
+import IconBar from "../IconBar.js";
+import useCheckLiked from "../../utils/useCheckLiked.js";
+import useCheckWatchlisted from "../../utils/useCheckWatchlisted.js";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import BookmarkBorderSharpIcon from "@material-ui/icons/BookmarkBorderSharp";
-import BookmarkSharpIcon from "@material-ui/icons/BookmarkSharp";
 
 const useStyles = makeStyles({
   root: {
@@ -32,89 +28,154 @@ const useStyles = makeStyles({
 
 function ItemCard(props) {
   const classes = useStyles();
-  const [isLiked, setIsLiked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const { userStat } = useContext(IsLoggedinContext);
+  const [isLiked, setIsLiked] = useCheckLiked(props.details.likedBy);
 
-  const status = useContext(IsLoggedinContext);
-
-  useEffect(() => {
-    if (status.isLoggedin) {
-      // make fetch to see what users have liked or have bookmarked;
-      return;
-    }
-  }, [status.isLoggedin]);
+  const [isBookmarked, setIsBookmarked] = useCheckWatchlisted(
+    props.details._id
+  );
 
   function handleLikeBtn(event) {
     event.preventDefault();
     event.stopPropagation();
+    if (!userStat.isLoggedin) {
+      return console.log(`You need to Login to like posts`);
+    }
+
     if (!isLiked) {
-      console.log(`liked this post`);
-      return setIsLiked(true);
+      console.log(`liked post ID: ${props.details._id} `);
+      return fetch("/api/post/like", {
+        method: "PUT",
+        body: JSON.stringify({ id: props.details._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          if (resp.status !== 200) {
+            throw resp.statusText;
+          }
+          return resp.json();
+        })
+        .then((result) => {
+          console.log(result);
+          setIsLiked(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
 
     if (isLiked) {
-      console.log(`liked this post`);
-      return setIsLiked(false);
+      console.log(`remove like from post ID: ${props.details._id}`);
+      return fetch("/api/post/unlike", {
+        method: "PUT",
+        body: JSON.stringify({ id: props.details._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          if (resp.status !== 200) {
+            throw resp.statusText;
+          }
+          return resp.json();
+        })
+        .then((result) => {
+          console.log(result);
+          setIsLiked(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 
   function handleWatchlistBtn(event) {
     event.preventDefault();
     event.stopPropagation();
+    if (!userStat.isLoggedin) {
+      return console.log(`You need to Login to add to watchlist`);
+    }
     if (!isBookmarked) {
-      console.log(`added to watchlist`);
-      return setIsBookmarked(true);
+      console.log(`added to watchlist item ID: ${props.details._id}`);
+      return fetch("/api/add/watchlist", {
+        method: "PUT",
+        body: JSON.stringify({ id: props.details._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          if (resp.status !== 200) {
+            throw resp.statusText;
+          }
+          return resp.json();
+        })
+        .then((result) => {
+          console.log(result);
+          setIsBookmarked(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
 
     if (isBookmarked) {
-      console.log(`remove from watchlist`);
-      return setIsBookmarked(false);
+      console.log(`remove from watchlist item ID: ${props.details._id}`);
+      return fetch("/api/remove/watchlist", {
+        method: "PUT",
+        body: JSON.stringify({ id: props.details._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          if (resp.status !== 200) {
+            throw resp.statusText;
+          }
+          return resp.json();
+        })
+        .then((result) => {
+          console.log(result);
+          setIsBookmarked(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 
   return (
-    <Grid item xs={6} sm={4} md={3}>
-      <Card
-        className={classes.root}
-        index={props.index}
-        onClick={props.handleClick}
-        style={{
-          cursor: "pointer",
-        }}
-      >
-        <CardMedia
-          className={classes.media}
-          image={props.details.images[0].location}
+    <Card
+      className={classes.root}
+      index={props.index}
+      // onClick={props.handleClick}
+      style={{
+        cursor: "pointer",
+      }}
+    >
+      <CardMedia
+        className={classes.media}
+        image={props.details.images[0].location}
+      />
+      <CardActions disableSpacing className={classes.cardActions}>
+        <IconBar
+          isLiked={isLiked}
+          isBookmarked={isBookmarked}
+          handleLikeBtn={handleLikeBtn}
+          handleWatchlistBtn={handleWatchlistBtn}
         />
-        <CardActions disableSpacing className={classes.cardActions}>
-          <IconButton aria-label="like post" onClick={handleLikeBtn}>
-            {!isLiked ? (
-              <FavoriteBorderIcon />
-            ) : (
-              <FavoriteIcon color="secondary" />
-            )}
-          </IconButton>
-          <IconButton
-            aria-label="add to watchlist"
-            onClick={handleWatchlistBtn}
-          >
-            {!isBookmarked ? (
-              <BookmarkBorderSharpIcon />
-            ) : (
-              <BookmarkSharpIcon color="primary" />
-            )}
-          </IconButton>
-        </CardActions>
-        <CardContent style={{ paddingBottom: "8px", paddingTop: 0 }}>
-          <Typography noWrap variant="h6" component="h2">
-            {props.details.title}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {`$ ${props.details.price}`}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Grid>
+      </CardActions>
+      <CardContent style={{ paddingBottom: "8px", paddingTop: 0 }}>
+        <Typography noWrap variant="h6" component="h2">
+          {props.details.title}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" component="p">
+          {`$ ${props.details.price}`}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 }
 

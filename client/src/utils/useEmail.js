@@ -5,7 +5,7 @@ function useEmail(email, delay) {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+      const regex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
       const isMatch = regex.test(email);
       if (isMatch) {
         fetch("/api/checkemailexist", {
@@ -14,16 +14,17 @@ function useEmail(email, delay) {
           headers: {
             "Content-Type": "application/json",
           },
-        }).then((resp) => {
-          return resp.json()
         })
-        .then((result) => {
+          .then((resp) => {
+            return resp.json();
+          })
+          .then((result) => {
             console.log(result);
-            if(result.length !== 0){
-                return setEmailValid(false);
+            if (result.length !== 0) {
+              return setEmailValid(false);
             }
             return setEmailValid(true);
-        })
+          });
       }
     }, delay);
 

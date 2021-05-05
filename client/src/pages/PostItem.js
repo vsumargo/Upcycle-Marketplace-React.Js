@@ -1,10 +1,9 @@
 import React, { useState, useContext } from "react";
 import IsLoggedinContext from "../utils/IsLoggedinContext.js";
 import PostItemForm from "../components/forms/PostItemForm.js";
-import Grid from "@material-ui/core/Grid";
 
 function PostItem() {
-  const status = useContext(IsLoggedinContext);
+  const { userStat } = useContext(IsLoggedinContext);
 
   const [itemDetails, setItemDetails] = useState({
     title: "",
@@ -64,7 +63,7 @@ function PostItem() {
 
   return (
     <>
-      {status.isLoggedin ? (
+      {userStat.isLoggedin ? (
         <PostItemForm
           itemDetails={itemDetails}
           handleChange={handleChange}
