@@ -13,7 +13,7 @@ app.use(express.json());
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
-app.use(session({ secret: "cats" }));
+app.use(session({ secret: process.env.SESSION_SECRET || "cat" }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -22,6 +22,10 @@ app.use(routes);
 
 // Connect to the Mongo DB
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/project3");
+
+// callSeed().then(() => {
+  
+// });
 
 // Start the API server
 app.listen(PORT, function () {
