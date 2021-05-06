@@ -49,11 +49,24 @@ router.get("/search", (req, res) => {
     .catch((err) => res.json(err));
 });
 
+router.get("/item/:id", (req, res) => {
+  const itemId = req.params.id;
+  console.log(itemId);
+  db.Post.findById(itemId)
+    .then((data) => res.json(data))
+    .catch((err) => res.json(err));
+});
+
 router.post("/api/postitem", uploadImages.array("images", 5), (req, res) => {
   const imagesURL = req.files.map((img) => {
     return { key: img.key, location: img.location };
   });
-  const itemDetails = { ...req.body, images: imagesURL, userId: req.user._id };
+  const itemDetails = {
+    ...req.body,
+    images: imagesURL,
+    userId: req.user._id,
+    likedBy: [],
+  };
   db.Post.create(itemDetails)
     .then((data) => {
       console.log(data._id);
@@ -65,5 +78,26 @@ router.post("/api/postitem", uploadImages.array("images", 5), (req, res) => {
     .then(() => res.status(200).json({ success: true }))
     .catch((err) => res.status(500).json({ success: false, error: err }));
 });
+
+router.put("/api/post/like", (req, res) => {
+  db.Post.updateOne(
+    { _id: req.body.id },
+    { $push: { likedBy: req.user._id } },
+    { new: true }
+  )
+    .then((data) => res.status(200).json(data))
+    .catch((err) => res.status(500).json({ success: false, error: err }));
+});
+
+router.put("/api/post/unlike", (req, res) => {
+  db.Post.updateOne(
+    { _id: req.body.id },
+    { $pull: { likedBy: req.user._id } },
+    { new: true }
+  )
+    .then((data) => res.status(200).json(data))
+    .catch((err) => res.status(500).json({ success: false, error: err }));
+});
+
 
 module.exports = router;

@@ -19,19 +19,20 @@ router.post("/api/register/user", (req, res) => {
     });
 });
 
-router.get('/api/logout', (req,res) => {
+router.get("/api/logout", (req, res) => {
   // if (!req.user){
   //   return res.redirect('/');
   // }
   req.logout();
   res.end();
-})
+});
 
-router.get('/api/userstatus', (req,res) => {
+router.get("/api/userstatus", (req, res) => {
+  console.log(req.user);
   if (!req.user) {
-    return res.json({isLoggedin : false});
+    return res.json({ isLoggedin: false });
   }
-  res.status(200).json ({isLoggedin: true});
-})
+  res.status(200).json({ isLoggedin: true, userId: req.user._id });
+});
 
 module.exports = router;

@@ -1,10 +1,9 @@
 import React, { useState, useContext } from "react";
 import IsLoggedinContext from "../utils/IsLoggedinContext.js";
 import PostItemForm from "../components/forms/PostItemForm.js";
-import axios from "axios";
 
 function PostItem() {
-  const status = useContext(IsLoggedinContext);
+  const { userStat } = useContext(IsLoggedinContext);
 
   const [itemDetails, setItemDetails] = useState({
     title: "",
@@ -63,8 +62,8 @@ function PostItem() {
   }
 
   return (
-    <div>
-      {status.isLoggedin ? (
+    <>
+      {userStat.isLoggedin ? (
         <PostItemForm
           itemDetails={itemDetails}
           handleChange={handleChange}
@@ -74,7 +73,7 @@ function PostItem() {
       ) : (
         <div> You need to Login to post item.</div>
       )}
-    </div>
+    </>
   );
 }
 
