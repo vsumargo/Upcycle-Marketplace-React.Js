@@ -115,12 +115,50 @@ function ViewItem() {
     }
     if (!isBookmarked) {
       console.log(`added to watchlist item ID: ${itemDetails._id}`);
-      return setIsBookmarked(true);
+      return fetch("/api/add/watchlist", {
+        method: "PUT",
+        body: JSON.stringify({ id: itemDetails._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          if (resp.status !== 200) {
+            throw resp.statusText;
+          }
+          return resp.json();
+        })
+        .then((result) => {
+          console.log(result);
+          setIsBookmarked(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
 
     if (isBookmarked) {
       console.log(`remove from watchlist item ID: ${itemDetails._id}`);
-      return setIsBookmarked(false);
+      return fetch("/api/remove/watchlist", {
+        method: "PUT",
+        body: JSON.stringify({ id: itemDetails._id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          if (resp.status !== 200) {
+            throw resp.statusText;
+          }
+          return resp.json();
+        })
+        .then((result) => {
+          console.log(result);
+          setIsBookmarked(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 
@@ -132,6 +170,8 @@ function ViewItem() {
     }
     history.goBack();
   }
+
+  console.log({ isLiked });
 
   return (
     <Grid

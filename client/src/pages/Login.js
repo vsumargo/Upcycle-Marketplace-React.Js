@@ -55,7 +55,7 @@ function Login() {
             })
             .then((data) => {
               setUserStat(data);
-              history.push(`/`);
+              history.goBack();
             });
         }
       })

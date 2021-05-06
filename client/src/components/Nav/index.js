@@ -95,7 +95,7 @@ export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
-  const { userStat } = useContext(IsLoggedinContext);
+  const { userStat, setUserStat } = useContext(IsLoggedinContext);
   const [login, setLogin] = useState(null);
 
   let location = useLocation();
@@ -125,7 +125,7 @@ export default function PrimarySearchAppBar() {
     setAnchorEl(null);
     handleMobileMenuClose();
     fetch("/api/logout/").then(() => {
-      window.location = "/";
+      setUserStat((prevState) => ({ ...prevState, isLoggedin: false }));
     });
   }
 

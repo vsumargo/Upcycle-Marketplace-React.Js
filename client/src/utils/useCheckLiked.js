@@ -8,13 +8,15 @@ function useCheckLiked(likedBy) {
   const [isLiked, setIsLiked] = useState(() => false);
 
   useEffect(() => {
-    if (isLoggedin && likedBy.length > 0 && !isLiked) {
+    if (isLoggedin) {
       const index = likedBy.indexOf(userId);
       if (index > -1) {
         setIsLiked((prevState) => !prevState);
       }
+    } else {
+      setIsLiked(false);
     }
-  }, [isLiked, isLoggedin, likedBy, userId]);
+  }, [isLoggedin, likedBy, userId]);
 
   return [isLiked, setIsLiked];
 }

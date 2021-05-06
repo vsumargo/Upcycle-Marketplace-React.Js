@@ -3,12 +3,12 @@ import IsLoggedinContext from "./IsLoggedinContext.js";
 
 function useCheckWatchlisted(itemId) {
   const {
-    userStat: { isLoggedin, userId },
+    userStat: { isLoggedin },
   } = useContext(IsLoggedinContext);
   const [isBookmarked, setIsBookmarked] = useState(() => false);
 
   useEffect(() => {
-    if (isLoggedin && !isBookmarked) {
+    if (isLoggedin) {
       fetch("/api/watchlist")
         .then((res) => {
           if (res.status !== 200) {
@@ -21,12 +21,14 @@ function useCheckWatchlisted(itemId) {
           const watchlistedItemId = result.watchList.map((item) => item._id);
           const index = watchlistedItemId.indexOf(itemId);
           if (index > -1) {
-            return setIsBookmarked((prevState) => !prevState);
+            setIsBookmarked((prevState) => !prevState);
           }
         })
         .catch((err) => console.log(err));
+    } else {
+      setIsBookmarked(false);
     }
-  }, [isBookmarked, isLoggedin, itemId, userId]);
+  }, [isLoggedin, itemId]);
 
   return [isBookmarked, setIsBookmarked];
 }
