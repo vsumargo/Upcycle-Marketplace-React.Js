@@ -105,23 +105,13 @@ function BuyNowButton(props) {
           </Toolbar>
         </AppBar>
         <Grid container>
-          <Grid
-            item
-            xs={12}
-            sm={7}
-            style={{ padding: "0 36px" }}
-          >
+          <Grid item xs={12} sm={7} style={{ padding: "0 36px" }}>
             <PaymentFormsStepper
               itemId={props.itemId}
               setSold={props.setSold}
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={5}
-            style={{ padding: "24px 36px" }}
-          >
+          <Grid item xs={12} sm={5} style={{ padding: "24px 36px" }}>
             <PaymentItemDetails itemDetails={props.itemDetails} />
           </Grid>
         </Grid>
