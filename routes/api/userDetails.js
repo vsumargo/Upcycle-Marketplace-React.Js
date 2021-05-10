@@ -10,7 +10,7 @@ router.get("/api/watchlist", (req, res) => {
   db.UserDetails.findOne({ userId: req.user._id }, "watchList")
     .populate("watchList")
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       res.status(200).json(data);
     })
     .catch((err) => {

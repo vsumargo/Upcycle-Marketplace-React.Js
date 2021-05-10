@@ -4,15 +4,14 @@ import IsLoggedinContext from "../utils/IsLoggedinContext";
 import SwipeableImages from "../components/SwipeableImages.js";
 import useCheckLiked from "../utils/useCheckLiked.js";
 import useCheckWatchlisted from "../utils/useCheckWatchlisted.js";
+import MakeOfferButton from "../components/MakeOfferButton.js";
+import BuyNowButton from "../components/BuyNowButton.js";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import CreditCardIcon from "@material-ui/icons/CreditCard";
-import MakeOffer from "@material-ui/icons/HowToVote";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
@@ -30,6 +29,7 @@ function ViewItem() {
   const classes = useStyles();
   const { userStat } = useContext(IsLoggedinContext);
   const [itemDetails, setItemDetails] = useState({ images: [], likedBy: [] });
+  const [sold, setSold] = useState("true");
   useEffect(() => {
     fetch(`/item/${id}`)
       .then((res) => {
@@ -42,6 +42,7 @@ function ViewItem() {
       .then((result) => {
         console.log(result);
         setItemDetails(result);
+        setSold(result.sold.toString());
       })
       .catch((err) => console.log(err));
   }, [id]);
@@ -49,7 +50,7 @@ function ViewItem() {
   const [isBookmarked, setIsBookmarked] = useCheckWatchlisted(itemDetails._id);
   const history = useHistory();
   let { id } = useParams();
-  console.log(id);
+  // console.log(id);
 
   function handleLikeBtn(event) {
     event.preventDefault();
@@ -171,7 +172,9 @@ function ViewItem() {
     history.goBack();
   }
 
-  console.log({ isLiked });
+  // function handleBuyNowBtn(event) {
+  //   event.preventDefault();
+  // }
 
   return (
     <Grid
@@ -205,27 +208,29 @@ function ViewItem() {
                 component="p"
                 style={{ paddingBottom: "8px" }}
               >
-                {`Price: $ ${itemDetails.price}`}
+                {sold === 'true' ? `SOLD` : `Price: $ ${itemDetails.price}`}
               </Typography>
               <Divider variant="middle" style={{ margin: 0 }} />
               <Grid container style={{ padding: "16px 0" }}>
                 <Grid item xs={12} md={6} align="center">
-                  <Button
-                    variant="contained"
-                    style={{
-                      backgroundColor: "#348feb",
-                      color: "white",
-                      margin: "8px 0",
-                    }}
+                  <MakeOfferButton
                     className={classes.button}
-                    startIcon={<MakeOffer />}
-                  >
-                    Make Offer
-                  </Button>
+                    itemId={itemDetails._id}
+                    sellerId={itemDetails.userId}
+                    sold={sold}
+                  />
                 </Grid>
 
                 <Grid item xs={12} md={6} align="center">
-                  <Button
+                  <BuyNowButton
+                    className={classes.button}
+                    itemId={itemDetails._id}
+                    sellerId={itemDetails.userId}
+                    itemDetails={itemDetails}
+                    sold={sold}
+                    setSold={setSold}
+                  />
+                  {/* <Button
                     variant="contained"
                     color="primary"
                     className={classes.button}
@@ -235,7 +240,7 @@ function ViewItem() {
                     }}
                   >
                     Buy Now
-                  </Button>
+                  </Button> */}
                 </Grid>
               </Grid>
               <Divider variant="middle" style={{ margin: 0 }} />

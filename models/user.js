@@ -14,6 +14,7 @@ const userSchema = new Schema({
     required: [true, "please enter password"],
   },
   createdAt: { type: Date, default: Date.now },
+  userDetails: { type: Schema.Types.ObjectId, ref: "UserDetails" },
 });
 
 userSchema.pre("save", function (next) {
