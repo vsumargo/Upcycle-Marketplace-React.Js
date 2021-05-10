@@ -173,7 +173,7 @@ function ItemCard(props) {
           {props.details.title}
         </Typography>
         <Typography variant="body2" color="textSecondary" component="p">
-          {`$ ${props.details.price}`}
+          {props.details.sold ? `SOLD` : `$ ${props.details.price}`}
         </Typography>
       </CardContent>
     </Card>

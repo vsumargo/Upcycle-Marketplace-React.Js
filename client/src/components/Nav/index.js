@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import IsLoggedinContext from "../../utils/IsLoggedinContext";
+import MessageIcon from "./MessageIcon.js";
 
 import { fade, makeStyles, withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -126,6 +127,7 @@ export default function PrimarySearchAppBar() {
     handleMobileMenuClose();
     fetch("/api/logout/").then(() => {
       setUserStat((prevState) => ({ ...prevState, isLoggedin: false }));
+      document.location.reload();
     });
   }
 
@@ -201,7 +203,7 @@ export default function PrimarySearchAppBar() {
               color="default"
               style={{ padding: 0 }}
             >
-              <AccountCircle fontSize="large" />
+              <AccountCircle />
             </IconButton>
           </MenuItem>
         </MenuList>
@@ -294,18 +296,37 @@ export default function PrimarySearchAppBar() {
               ""
             ) : login ? (
               <>
-                <Button size="small" variant="contained" color="primary">
-                  <Link
-                    to="/post-item"
-                    style={{ color: "none", textDecoration: "none" }}
-                  >
+                <Link
+                  to="/post-item"
+                  style={{
+                    color: "none",
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    margin: "0 8px",
+                  }}
+                >
+                  <Button size="small" variant="contained" color="primary">
                     Sell Item
-                  </Link>
-                </Button>
-
-                <Button color="default" onClick={handleLogout}>
-                  Logout
-                </Button>
+                  </Button>
+                </Link>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    margin: "0 8px",
+                  }}
+                >
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </Button>
+                </div>
+                <MessageIcon />
                 <Button
                   aria-label="account of current user"
                   aria-controls={menuId}
@@ -313,7 +334,7 @@ export default function PrimarySearchAppBar() {
                   onClick={handleProfileMenuOpen}
                   color="default"
                 >
-                  <AccountCircle fontSize="large" />
+                  <AccountCircle />
                   <ArrowDropDownIcon />
                 </Button>
               </>
@@ -335,6 +356,7 @@ export default function PrimarySearchAppBar() {
             )}
           </div>
           <div className={classes.sectionMobile}>
+            <MessageIcon />
             <IconButton
               aria-label="show more"
               aria-controls={mobileMenuId}

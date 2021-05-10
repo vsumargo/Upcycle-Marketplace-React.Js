@@ -99,5 +99,14 @@ router.put("/api/post/unlike", (req, res) => {
     .catch((err) => res.status(500).json({ success: false, error: err }));
 });
 
+router.put("/api/post/sold", (req, res) => {
+  db.Post.updateOne(
+    { _id: req.body.itemId },
+    { $set: { sold: true, soldTo: req.user._id } },
+    { new: true }
+  )
+    .then((data) => res.status(200).json(data))
+    .catch((err) => res.status(500).json({ success: false, error: err }));
+});
 
 module.exports = router;

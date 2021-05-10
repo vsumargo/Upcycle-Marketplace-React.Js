@@ -46,13 +46,13 @@ function Watchlist() {
         watchlistedItems.length === 0 ? (
           <div>You have no watchlisted items</div>
         ) : (
-          <div>
-            <Typography variant="h4" gutterBottom>
+          <div style={{paddingBottom:"48px"}}>
+            <Typography variant="h4" gutterBottom style={{padding:"16px 16px"}}>
               Watchlisted Items:
             </Typography>
             <Grid
               container
-              spacing={1}
+              spacing={3}
               alignItems="flex-start"
               justify="flex-start"
             >

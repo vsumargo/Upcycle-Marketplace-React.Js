@@ -54,11 +54,11 @@ function SearchItem() {
   // // }
 
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>
+    <div style={{paddingBottom:"48px"}}>
+      <Typography variant="h4" gutterBottom style={{padding:"16px 16px"}}>
         Searching for: {query.get("item")}
       </Typography>
-      <Grid container spacing={1} alignItems="flex-start" justify="flex-start">
+      <Grid container spacing={3} alignItems="flex-start" justify="flex-start">
         {searchedItems.map((details, index) => {
           return (
             <Grid item xs={6} sm={4} md={3} key={details._id}>

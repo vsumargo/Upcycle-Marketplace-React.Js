@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import IsLoggedinContext from "./utils/IsLoggedinContext.js";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
+import "./App.css";
 
 import Nav from "./components/Nav";
 import Home from "./pages/Home.js";
