@@ -42,7 +42,7 @@ function ViewItem() {
   const [itemDetails, setItemDetails] = useState({ images: [], likedBy: [] });
   const [sold, setSold] = useState("true");
   useEffect(() => {
-    fetch(`/item/${id}`)
+    fetch(`/api/item/${id}`)
       .then((res) => {
         if (res.status !== 200) {
           throw res;
