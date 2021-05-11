@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -49,7 +51,7 @@ function PaymentFormsStepper(props) {
     postcode: "",
     mobile: "",
   });
-
+  const history = useHistory();
   const [paymentDetails, setPaymentDetails] = useState({
     cardnumber: "",
     expiration: "",
@@ -57,11 +59,11 @@ function PaymentFormsStepper(props) {
     cvv: "",
   });
 
-  const [loading, setLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const timer = React.useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       clearTimeout(timer.current);
     };
@@ -379,7 +381,7 @@ function PaymentFormsStepper(props) {
             setSuccess(true);
             setLoading(false);
             props.setSold(true);
-            document.location.reload();
+            history.go(0);
           }, 3000);
         })
         .catch((error) => {

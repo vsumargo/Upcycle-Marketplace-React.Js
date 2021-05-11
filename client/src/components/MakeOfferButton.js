@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import IsLoggedinContext from "../utils/IsLoggedinContext";
+import { useHistory } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -23,6 +24,8 @@ function MakeOfferButton(props) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const timer = useRef();
+
+  const history = useHistory();
 
   useEffect(() => {
     return () => {
@@ -82,7 +85,7 @@ function MakeOfferButton(props) {
               }
               return resp.json();
             })
-            .then(() => document.location.reload())
+            .then(() => history.go(0))
             .catch((error) => {
               console.log(error);
             });
