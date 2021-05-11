@@ -194,6 +194,9 @@ function ViewItem() {
     history.goBack();
   }
 
+  function setSoldState(bool) {
+    setSold(bool);
+  }
   return (
     <Grid
       container
@@ -247,7 +250,7 @@ function ViewItem() {
                     sellerId={itemDetails.userId}
                     itemDetails={itemDetails}
                     sold={sold}
-                    setSold={setSold}
+                    setSoldState={setSoldState}
                     setOpen={setOpenNotLoggedin}
                   />
                 </Grid>
