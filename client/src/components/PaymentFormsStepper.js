@@ -379,6 +379,7 @@ function PaymentFormsStepper(props) {
             setSuccess(true);
             setLoading(false);
             props.setSold(true);
+            document.location.reload();
           }, 3000);
         })
         .catch((error) => {
@@ -463,9 +464,6 @@ function PaymentFormsStepper(props) {
                 success
                   ? {
                       backgroundColor: "#47d147",
-                      "&:hover": {
-                        backgroundColor: "#248f24",
-                      },
                     }
                   : {}
               }

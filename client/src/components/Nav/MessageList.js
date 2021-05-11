@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { Link } from "react-router-dom";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -90,13 +90,18 @@ function MessageList({ details }) {
               style={{ fontSize: "12px", width: "90%" }}
             >{`Your offer of $${details.offerPrice} has been accepted. Please make payment`}</span>
             <span>
-              <Button
-                variant="outlined"
-                color="primary"
-                style={{ padding: 0, fontSize: "10px", margin: "0 3px" }}
+              <Link
+                to={`/item/${details.postId._id}`}
+                style={{ textDecoration: "none" }}
               >
-                Pay Now
-              </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  style={{ padding: 0, fontSize: "10px", margin: "0 3px" }}
+                >
+                  Pay Now
+                </Button>
+              </Link>
             </span>
           </span>
         );
@@ -237,19 +242,7 @@ function MessageList({ details }) {
         </ListItemAvatar>
         <ListItemText
           primary={details.postId.title}
-          secondary={
-            <>
-              {/* <Typography
-                component="span"
-                variant="body2"
-                style={{ display: "inline" }}
-                color="textPrimary"
-              >
-                {displayMessage(details.message)}
-              </Typography> */}
-              {displayMessage(details.message, replyStatus)}
-            </>
-          }
+          secondary={<>{displayMessage(details.message, replyStatus)}</>}
         />
       </ListItem>
       <Divider component="li" />

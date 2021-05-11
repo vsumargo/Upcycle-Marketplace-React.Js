@@ -10,10 +10,18 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+} from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   root: {
     maxWidth: "100%",
+    "&:hover": {
+      boxShadow: "0 0 20px grey",
+    },
   },
   media: {
     height: 140,
@@ -25,6 +33,9 @@ const useStyles = makeStyles({
     paddingTop: 0,
   },
 });
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
 
 function ItemCard(props) {
   const classes = useStyles();
@@ -39,6 +50,7 @@ function ItemCard(props) {
     event.preventDefault();
     event.stopPropagation();
     if (!userStat.isLoggedin) {
+      props.setOpen(true);
       return console.log(`You need to Login to like posts`);
     }
 
@@ -96,6 +108,7 @@ function ItemCard(props) {
     event.preventDefault();
     event.stopPropagation();
     if (!userStat.isLoggedin) {
+      props.setOpen(true);
       return console.log(`You need to Login to add to watchlist`);
     }
     if (!isBookmarked) {
@@ -169,12 +182,14 @@ function ItemCard(props) {
         />
       </CardActions>
       <CardContent style={{ paddingBottom: "8px", paddingTop: 0 }}>
-        <Typography noWrap variant="h6" component="h2">
-          {props.details.title}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {props.details.sold ? `SOLD` : `$ ${props.details.price}`}
-        </Typography>
+        <ThemeProvider theme={theme}>
+          <Typography noWrap variant="subtitle2">
+            {props.details.title}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {props.details.sold ? `SOLD` : `$ ${props.details.price}`}
+          </Typography>
+        </ThemeProvider>
       </CardContent>
     </Card>
   );
