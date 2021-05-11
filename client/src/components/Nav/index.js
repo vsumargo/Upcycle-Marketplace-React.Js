@@ -7,7 +7,7 @@ import { fade, makeStyles, withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
+// import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
 import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -17,6 +17,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Button from "@material-ui/core/Button";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import UpcycleLogo from "../../logo/logo-text.jpg";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -162,7 +163,7 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
+      {/* <MenuItem onClick={handleMenuClose}>My Profile</MenuItem> */}
       <MenuItem onClick={handleMenuClose}>
         <Link to="/watchlist">Watchlist</Link>
       </MenuItem>
@@ -259,10 +260,21 @@ export default function PrimarySearchAppBar() {
         position="static"
       >
         <Toolbar>
-          <Link to="/" style={{ color: "black", textDecoration: "none" }}>
-            <Typography className={classes.title} variant="h6" noWrap>
-              UPCYCLE
-            </Typography>
+          <Link
+            to="/"
+            style={{
+              color: "black",
+              textDecoration: "none",
+              width: "120px",
+              height: "80px",
+            }}
+          >
+            <img
+              src={UpcycleLogo}
+              width="100px"
+              height="70px"
+              style={{ boxShadow: "none" }}
+            />
           </Link>
           <div className={classes.search}>
             {displaySearchBar && (

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Searchbar from "../components/Searchbar.js";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -29,31 +29,30 @@ function Home() {
   }
 
   return (
-    <div>
-      <Grid
-        container
-        spacing={0}
-        style={{ height: "89vh" }}
-        alignItems="center"
-        justify="center"
-      >
-        <Grid
-          item
-          xs={10}
+    <Grid
+      container
+      spacing={0}
+      style={{ height: "89vh" }}
+      alignItems="center"
+      justify="center"
+    >
+      <Grid item xs={10}>
+        <form
+          className={classes.root}
+          noValidate
+          autoComplete="off"
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <form
-            className={classes.root}
-            noValidate
-            autoComplete="off"
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-            style={{display:'flex', alignItems:'center', justifyContent:'center' }}
-          >
-            <Searchbar searchedItem={item} />
-          </form>
-        </Grid>
+          <Searchbar searchedItem={item} />
+        </form>
       </Grid>
-    </div>
+    </Grid>
   );
 }
 export default Home;

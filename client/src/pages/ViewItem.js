@@ -16,6 +16,17 @@ import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
+import Snackbar from "@material-ui/core/Snackbar";
+
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+} from "@material-ui/core/styles";
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
+
 const useStyles = makeStyles({
   root: {
     width: "100vw",
@@ -51,11 +62,21 @@ function ViewItem() {
   const history = useHistory();
   let { id } = useParams();
   // console.log(id);
+  const [openNotLoggedin, setOpenNotLoggedin] = React.useState(false);
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenNotLoggedin(false);
+  };
 
   function handleLikeBtn(event) {
     event.preventDefault();
     event.stopPropagation();
     if (!userStat.isLoggedin) {
+      setOpenNotLoggedin(true);
       return console.log(`You need to Login to like posts`);
     }
 
@@ -112,6 +133,7 @@ function ViewItem() {
     event.preventDefault();
     event.stopPropagation();
     if (!userStat.isLoggedin) {
+      setOpenNotLoggedin(true);
       return console.log(`You need to Login to add to watchlist`);
     }
     if (!isBookmarked) {
@@ -172,10 +194,6 @@ function ViewItem() {
     history.goBack();
   }
 
-  // function handleBuyNowBtn(event) {
-  //   event.preventDefault();
-  // }
-
   return (
     <Grid
       container
@@ -199,17 +217,17 @@ function ViewItem() {
               <IconButton onClick={handleCloseBtn} style={{ float: "right" }}>
                 <CloseIcon color="secondary" />
               </IconButton>
-              <Typography variant="h5" component="h2">
-                {itemDetails.title}
-              </Typography>
-              <Typography
-                variant="body1"
-                color="textPrimary"
-                component="p"
-                style={{ paddingBottom: "8px" }}
-              >
-                {sold === 'true' ? `SOLD` : `Price: $ ${itemDetails.price}`}
-              </Typography>
+              <ThemeProvider theme={theme}>
+                <Typography variant="h5">{itemDetails.title}</Typography>
+                <Typography
+                  variant="body1"
+                  color="textPrimary"
+                  component="p"
+                  style={{ paddingBottom: "8px" }}
+                >
+                  {sold === "true" ? `SOLD` : `Price: $ ${itemDetails.price}`}
+                </Typography>
+              </ThemeProvider>
               <Divider variant="middle" style={{ margin: 0 }} />
               <Grid container style={{ padding: "16px 0" }}>
                 <Grid item xs={12} md={6} align="center">
@@ -218,6 +236,7 @@ function ViewItem() {
                     itemId={itemDetails._id}
                     sellerId={itemDetails.userId}
                     sold={sold}
+                    setOpen={setOpenNotLoggedin}
                   />
                 </Grid>
 
@@ -229,33 +248,53 @@ function ViewItem() {
                     itemDetails={itemDetails}
                     sold={sold}
                     setSold={setSold}
+                    setOpen={setOpenNotLoggedin}
                   />
-                  {/* <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    startIcon={<CreditCardIcon />}
-                    style={{
-                      margin: "8px 0",
-                    }}
-                  >
-                    Buy Now
-                  </Button> */}
                 </Grid>
               </Grid>
               <Divider variant="middle" style={{ margin: 0 }} />
-              <Typography
-                style={{ paddingTop: "8px" }}
-              >{`Condition: ${itemDetails.condition}`}</Typography>
-              <br></br>
-              <Typography variant="body1" component="div">
-                Description:
-              </Typography>
-              <Typography>{itemDetails.description}</Typography>
+              <ThemeProvider theme={theme}>
+                <Typography
+                  variant="body2"
+                  style={{ paddingTop: "8px" }}
+                >{`Condition: ${itemDetails.condition}`}</Typography>
+                <br></br>
+                <Typography
+                  variant="body1"
+                  style={{ textDecoration: "underline" }}
+                >
+                  Description:
+                </Typography>
+                <Typography variant="caption">
+                  {itemDetails.description}
+                </Typography>
+              </ThemeProvider>
             </CardContent>
           </Grid>
         </Grid>
       </Card>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={openNotLoggedin}
+        autoHideDuration={1500}
+        onClose={handleCloseSnackbar}
+        message="User need to Login"
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="secondary"
+              onClick={handleCloseSnackbar}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
     </Grid>
   );
 }

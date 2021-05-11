@@ -46,7 +46,8 @@ function BuyNowButton(props) {
     if (userStat.isLoggedin === true && currentUser !== props.sellerId) {
       return setOpen(true);
     }
-    console.log(`You need to login to make an offer`);
+    console.log(`You need to login to buy the item`);
+    props.setOpen(true);
   };
 
   const handleClose = () => {

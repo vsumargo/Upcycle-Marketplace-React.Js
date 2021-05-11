@@ -46,31 +46,31 @@ function App() {
       <IsLoggedinContext.Provider value={{ userStat, setUserStat }}>
         <BrowserRouter>
           <Nav />
-          <Container>
-            <Switch>
-              <Route exact path="/post-item">
-                <PostItem />
-              </Route>
-              <Route exact path="/login">
-                <Login />
-              </Route>
-              <Route exact path="/signup">
-                <Signup />
-              </Route>
-              <Route exact path="/watchlist">
-                <Watchlist />
-              </Route>
-              <Route exact path="/">
-                <Home />
-              </Route>
-              <Route path="/item/:id">
-                <ViewItem />
-              </Route>
-              <Route path="/search">
-                <SearchItem />
-              </Route>
-            </Switch>
-          </Container>
+            <Container>
+              <Switch>
+                <Route exact path="/post-item">
+                  <PostItem />
+                </Route>
+                <Route exact path="/login">
+                  <Login />
+                </Route>
+                <Route exact path="/signup">
+                  <Signup />
+                </Route>
+                <Route exact path="/watchlist">
+                  <Watchlist />
+                </Route>
+                <Route exact path="/">
+                  <Home />
+                </Route>
+                <Route path="/item/:id">
+                  <ViewItem />
+                </Route>
+                <Route path="/search">
+                  <SearchItem />
+                </Route>
+              </Switch>
+            </Container>
         </BrowserRouter>
       </IsLoggedinContext.Provider>
     </>
