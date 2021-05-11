@@ -63,10 +63,10 @@ function App() {
                 <Route exact path="/">
                   <Home />
                 </Route>
-                <Route path="/item/:id">
+                <Route exact path="/item/:id">
                   <ViewItem />
                 </Route>
-                <Route path="/search">
+                <Route exact path="/search">
                   <SearchItem />
                 </Route>
               </Switch>
