@@ -109,7 +109,7 @@ function BuyNowButton(props) {
           <Grid item xs={12} sm={7} style={{ padding: "0 36px" }}>
             <PaymentFormsStepper
               itemId={props.itemId}
-              setSold={props.setSold}
+              setSoldState={props.setSoldState}
             />
           </Grid>
           <Grid item xs={12} sm={5} style={{ padding: "24px 36px" }}>

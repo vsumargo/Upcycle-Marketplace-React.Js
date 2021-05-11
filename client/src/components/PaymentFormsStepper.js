@@ -380,7 +380,7 @@ function PaymentFormsStepper(props) {
           timer.current = window.setTimeout(() => {
             setSuccess(true);
             setLoading(false);
-            props.setSold(true);
+            props.setSoldState(true);
             history.go(0);
           }, 3000);
         })
