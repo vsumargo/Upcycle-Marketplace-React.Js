@@ -25,7 +25,7 @@ function SearchItem() {
   useEffect(() => {
     const query = new URLSearchParams(location.search);
 
-    fetch(`/search?item=${query.get("item")}`)
+    fetch(`/api/search?item=${query.get("item")}`)
       .then((res) => {
         if (res.status !== 200) {
           throw res;

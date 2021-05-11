@@ -42,14 +42,14 @@ const uploadImages = require("../../services/imageUpload-S3.js");
 //   }),
 // });
 
-router.get("/search", (req, res) => {
+router.get("/api/search", (req, res) => {
   const itemName = req.query.item.toLowerCase();
   db.Post.find({ title: { $regex: itemName, $options: "i" } })
     .then((data) => res.json(data))
     .catch((err) => res.json(err));
 });
 
-router.get("/item/:id", (req, res) => {
+router.get("/api/item/:id", (req, res) => {
   const itemId = req.params.id;
   console.log(itemId);
   db.Post.findById(itemId)
